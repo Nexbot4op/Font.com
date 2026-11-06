@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<title>فونت‌ساز متن</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: one neon-tube title, a big input, then a wall of tap-to-copy style cards that rebuild live as you type. Single committed dark look. */
+:root {
+  --bg: #060d24;
+  --surface: #0d1838;
+  --surface-2: #142250;
+  --line: #243a7a;
+  --ink: #eaf1ff;
+  --muted: #93a6d6;
+  --pink: #2f7bff;
+  --cyan: #27e6ff;
+  --cyan-dim: rgba(39, 230, 255, 0.55);
+  --pink-glow: rgba(47, 123, 255, 0.6);
+  --f-display: 'Lalezar', 'Vazirmatn', system-ui, sans-serif;
+  --f-body: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --f-glyph: 'Vazirmatn', 'Noto Sans Math', 'Noto Sans Symbols 2', 'Noto Sans Symbols', 'Segoe UI Symbol', 'Apple Symbols', 'Cambria Math', system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(60rem 30rem at 85% -8%, rgba(47, 123, 255, 0.18), transparent 70%),
+    radial-gradient(50rem 28rem at 5% 105%, rgba(39, 230, 255, 0.12), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: auto, auto, 36px 36px, 36px 36px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.7;
+}
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.hero { display: flex; flex-direction: column; gap: 10px; }
+.eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--cyan);
+}
+h1 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(3.6rem, 16vw, 7.5rem);
+  line-height: 1.05;
+  color: #e6f0ff;
+  text-shadow:
+    0 0 0.1em rgba(47, 123, 255, 0.95),
+    0 0 0.45em var(--pink-glow),
+    0.04em 0.035em 0 var(--cyan-dim);
+  animation: flicker 1.4s steps(1, end) 1;
+}
+@keyframes flicker {
+  0% { opacity: 0.35; } 8% { opacity: 1; } 12% { opacity: 0.5; } 18% { opacity: 1; }
+  44% { opacity: 0.8; } 48% { opacity: 1; } 100% { opacity: 1; }
+}
+.lede { margin: 0; max-width: 34rem; color: var(--muted); }
+.demo {
+  margin: 6px 0 0;
+  min-height: 1.6em;
+  font-family: var(--f-glyph);
+  font-size: clamp(1.3rem, 5.4vw, 2.1rem);
+  color: var(--cyan);
+  text-shadow: 0 0 0.5em rgba(39, 230, 255, 0.45);
+  text-align: right;
+  overflow-wrap: anywhere;
+  transition: opacity 0.18s ease;
+}
+.demo.swap { opacity: 0; }
+
+.panel {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.panel label { font-weight: 700; font-size: 0.95rem; }
+#txt {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font: 500 1.45rem/1.5 var(--f-glyph);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  text-align: right;
+}
+#txt::placeholder { color: var(--muted); opacity: 0.7; }
+#txt:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(47, 123, 255, 0.22), 0 0 28px rgba(47, 123, 255, 0.25);
+}
+.samples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--muted); font-size: 0.9rem; }
+.samples button {
+  font: 500 0.9rem var(--f-glyph);
+  color: var(--ink);
+  background: transparent;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  padding: 0.2rem 0.85rem;
+  cursor: pointer;
+}
+.samples button:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: 500 0.92rem var(--f-body);
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+}
+.chip:hover { color: var(--ink); border-color: var(--muted); }
+.chip[aria-pressed="true"] {
+  color: #fff;
+  background: var(--pink);
+  border-color: var(--pink);
+  box-shadow: 0 0 18px var(--pink-glow);
+  font-weight: 700;
+}
+.power { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--muted); }
+.power input { width: 130px; accent-color: var(--cyan); }
+.power output { font-family: var(--f-mono); color: var(--cyan); min-width: 1ch; }
+
+#status { margin: 0; font-size: 0.9rem; color: var(--muted); overflow-wrap: anywhere; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 12px; }
+.card {
+  --i: 0;
+  display: flex; flex-direction: column; gap: 8px;
+  min-width: 0;
+  padding: 14px 16px 12px;
+  text-align: right;
+  font: inherit; color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  animation: rise 0.45s ease both;
+  animation-delay: calc(var(--i) * 25ms);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+@keyframes rise { from { transform: translateY(10px); } to { transform: none; } }
+.card:hover { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan), 0 0 26px rgba(39, 230, 255, 0.18); }
+.card:active { transform: scale(0.985); }
+.card .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--muted); }
+.card .tag { font-weight: 700; color: var(--pink); }
+.card .out {
+  font-family: var(--f-glyph);
+  font-size: 1.5rem;
+  line-height: 1.6;
+  min-height: 2.4rem;
+  text-align: right;
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.card .meta { font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); direction: ltr; text-align: right; opacity: 0.8; }
+.card.done { border-color: var(--pink); box-shadow: 0 0 0 1px var(--pink), 0 0 26px var(--pink-glow); }
+.card.done .tag { color: var(--cyan); }
+.card.inert { opacity: 0.4; cursor: default; }
+.card.inert:hover { border-color: var(--line); box-shadow: none; }
+.card.inert .out { font-size: 0.95rem; color: var(--muted); font-family: var(--f-body); }
+.empty { grid-column: 1 / -1; padding: 28px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+.foot { margin: 6px 0 0; max-width: 46rem; font-size: 0.85rem; color: var(--muted); }
+
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 20px);
+  padding: 0.55rem 1.2rem;
+  background: var(--cyan);
+  color: #04141a;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 999px;
+  box-shadow: 0 0 28px rgba(39, 230, 255, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  max-width: calc(100% - 32px);
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mode {
+  font: 700 1rem var(--f-body);
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.8rem 0.5rem;
+  cursor: pointer;
+}
+.mode small { display: block; font: 400 0.78rem var(--f-body); opacity: 0.85; }
+.mode:hover { color: var(--ink); }
+.mode[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--surface-2);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px var(--cyan), 0 0 22px rgba(39, 230, 255, 0.22);
+}
+.swatches { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--muted); }
+.sw {
+  width: 30px; height: 30px; padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--c);
+  box-shadow: 0 0 14px var(--c);
+  cursor: pointer;
+}
+.sw[aria-pressed="true"] { border-color: #fff; transform: scale(1.14); }
+.card.font .out {
+  font-size: 2.1rem;
+  line-height: 1.9;
+  min-height: 4rem;
+  padding-block: 4px;
+  color: var(--fc, var(--ink));
+  text-shadow: 0 0 0.4em var(--fc, transparent);
+}
+.card.font .meta { font-size: 0.74rem; }
+.cw { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cw .card { flex: 1; }
+.dl {
+  font: 700 0.88rem var(--f-body);
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+.dl:hover { border-color: var(--pink); color: var(--pink); box-shadow: 0 0 18px rgba(47, 123, 255, 0.25); }
+.dl[disabled] { opacity: 0.6; cursor: progress; }
+
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  h1, .card { animation: none; }
+  .demo, #toast, .card { transition: none; }
+}
+</style>
+</head>
+<body>
+
+
+<div dir="rtl" lang="fa">
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow" id="count"></p>
+      <h1>فونت‌ساز</h1>
+      <p class="lede">اسم یا متنت رو بنویس. همه‌ی سبک‌ها همزمان ساخته می‌شن. روی هر کدوم بزنی کپی میشه و می‌تونی تو بایو، نیک‌نیم بازی یا چت بچسبونی.</p>
+      <p class="demo" id="demo" aria-hidden="true"></p>
+    </header>
+
+    <section class="panel">
+      <label for="txt">متنت رو بنویس</label>
+      <input id="txt" type="text" dir="auto" maxlength="40" autocomplete="off" spellcheck="false" placeholder="Night Wolf یا سایه">
+      <div class="samples">
+        <span>نمونه:</span>
+        <button type="button" data-s="Night Wolf">Night Wolf</button>
+        <button type="button" data-s="Arman_King">Arman_King</button>
+        <button type="button" data-s="سایه‌ی شب">سایه‌ی شب</button>
+        <button type="button" data-s="نیما">نیما</button>
+      </div>
+    </section>
+
+    <div class="modes" role="group" aria-label="نوع خروجی">
+      <button type="button" class="mode" data-m="styles" aria-pressed="true">سبک‌های قابل کپی<small>برای بایو، چت و نیک‌نیم</small></button>
+      <button type="button" class="mode" data-m="fonts" aria-pressed="false">فونت‌های واقعی<small>برای پوستر، بنر و ادیت</small></button>
+    </div>
+
+    <div class="bar" id="stylebar">
+      <div class="chips" id="chips" role="group" aria-label="دسته‌بندی سبک‌ها">
+        <button type="button" class="chip" data-g="all" aria-pressed="true">همه</button>
+        <button type="button" class="chip" data-g="latin" aria-pressed="false">انگلیسی</button>
+        <button type="button" class="chip" data-g="frames" aria-pressed="false">قاب و نماد</button>
+        <button type="button" class="chip" data-g="line" aria-pressed="false">خط‌دار</button>
+        <button type="button" class="chip" data-g="persian" aria-pressed="false">فارسی</button>
+      </div>
+      <div class="power">
+        <label for="power">شدت کشیدگی و فاصله</label>
+        <input id="power" type="range" min="1" max="4" step="1" value="2">
+        <output id="powerOut" for="power">۲</output>
+      </div>
+    </div>
+
+    <div class="swatches" id="fontbar" hidden>
+      <span class="chips" id="flangs" role="group" aria-label="زبان فونت">
+        <button type="button" class="chip" data-fl="all" aria-pressed="true">همه</button>
+        <button type="button" class="chip" data-fl="fa" aria-pressed="false">فارسی</button>
+        <button type="button" class="chip" data-fl="en" aria-pressed="false">انگلیسی</button>
+      </span>
+      <span>رنگ نئون و رنگ عکس:</span>
+      <span id="swatches" role="group" aria-label="رنگ نئون" style="display:flex;gap:10px;flex-wrap:wrap"></span>
+    </div>
+
+    <p id="status" aria-live="polite"></p>
+    <div id="grid" class="grid"></div>
+
+    <p class="foot" id="foot-fonts" hidden>این‌ها فونت‌های رایگان Google Fonts هستن. روی هر کارت بزنی اسم فونت کپی میشه؛ همون اسم رو تو برنامه‌ی ادیت، سایت‌ساز یا سایت Google Fonts جستجو کن و دانلودش کن. وقتی متن فارسی بنویسی فقط فونت‌هایی که فارسی رو پشتیبانی می‌کنن نشون داده میشن.</p>
+    <p class="foot" id="foot-style">این‌ها فایل فونت نیستن. حروف یونیکد هستن، برای همین هرجایی که بشه متن چسبوند کار می‌کنن. بعضی بازی‌ها و اپ‌ها بعضی نمادها رو نشون نمیدن و به جاش مربع خالی میذارن. حروف فارسی سبک یونیکد ندارن، برای همین برای فارسی کشیدگی، فاصله و قاب ساخته میشه.</p>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var input = $('#txt'), grid = $('#grid'), statusEl = $('#status'), toastEl = $('#toast');
+  var demo = $('#demo'), power = $('#power'), powerOut = $('#powerOut');
+  var fa = function (n) { try { return Number(n).toLocaleString('fa-IR'); } catch (e) { return String(n); } };
+
+  /* ---------- helpers ---------- */
+  var FA_JOIN = 'بپتثجچحخسشصضطظعغفقکگلمنهیئكيۀ';
+  var FA_LETTER = /[ء-يٮ-ۓۺ-ۿ]/;
+  function hasFa(t) { return FA_LETTER.test(t); }
+
+  function mk(U, L, D, o) {
+    o = o || {};
+    var ex = o.ex || {};
+    return function (t) {
+      return Array.from(t).map(function (c) {
+        if (ex[c]) return String.fromCodePoint(ex[c]);
+        var k = c.codePointAt(0);
+        if (o.fold && k >= 97 && k <= 122) k -= 32;
+        if (k >= 65 && k <= 90 && U != null) return String.fromCodePoint(U + k - 65);
+        if (k >= 97 && k <= 122 && L != null) return String.fromCodePoint(L + k - 97);
+        if (k >= 48 && k <= 57) {
+          if (o.dig) return String.fromCodePoint(o.dig(k));
+          if (D != null) return String.fromCodePoint(D + k - 48);
+        }
+        return c;
+      }).join('');
+    };
+  }
+  function tbl(from, to) {
+    var f = Array.from(from), r = Array.from(to), m = {};
+    f.forEach(function (c, i) { m[c] = r[i]; });
+    return function (t) {
+      return Array.from(t).map(function (c) {
+        var l = c.toLowerCase();
+        return m[l] !== undefined ? m[l] : c;
+      }).join('');
+    };
+  }
+  function mark(ch) {
+    return function (t) {
+      return Array.from(t).map(function (c) { return /\s/.test(c) ? c : c + ch; }).join('');
+    };
+  }
+  function wrap(pre, post) { return function (t) { return pre + t + post; }; }
+  function kashida(t, n) {
+    var a = Array.from(t), o = '';
+    for (var i = 0; i < a.length; i++) {
+      o += a[i];
+      if (FA_JOIN.indexOf(a[i]) > -1 && a[i + 1] && FA_LETTER.test(a[i + 1])) o += 'ـ'.repeat(n);
+    }
+    return o;
+  }
+
+  var ABC = 'abcdefghijklmnopqrstuvwxyz';
+  var upside = (function () {
+    var m = tbl(ABC + '0123456789', 'ɐqɔpǝɟƃɥᴉɾʞꞁɯuodbɹsʇnʌʍxʎz' + '0ƖᄅƐㄣϛ9ㄥ86');
+    return function (t) {
+      var o = m(t);
+      return o === t ? t : Array.from(o).reverse().join('');
+    };
+  })();
+
+  /* ---------- styles ---------- */
+  var S = [
+    // latin
+    { id: 'bold', g: 'latin', n: 'بولد', need: 'en', meta: 'Math Bold · U+1D400', fn: mk(0x1D400, 0x1D41A, 0x1D7CE) },
+    { id: 'italic', g: 'latin', n: 'ایتالیک', need: 'en', meta: 'Math Italic · U+1D434', fn: mk(0x1D434, 0x1D44E, null, { ex: { h: 0x210E } }) },
+    { id: 'bolditalic', g: 'latin', n: 'بولد ایتالیک', need: 'en', meta: 'Math Bold Italic · U+1D468', fn: mk(0x1D468, 0x1D482, 0x1D7CE) },
+    { id: 'script', g: 'latin', n: 'دست‌نویس', need: 'en', meta: 'Math Script · U+1D49C', fn: mk(0x1D49C, 0x1D4B6, null, { ex: { B: 0x212C, E: 0x2130, F: 0x2131, H: 0x210B, I: 0x2110, L: 0x2112, M: 0x2133, R: 0x211B, e: 0x212F, g: 0x210A, o: 0x2134 } }) },
+    { id: 'boldscript', g: 'latin', n: 'دست‌نویس بولد', need: 'en', meta: 'Math Bold Script · U+1D4D0', fn: mk(0x1D4D0, 0x1D4EA, 0x1D7CE) },
+    { id: 'fraktur', g: 'latin', n: 'گوتیک', need: 'en', meta: 'Math Fraktur · U+1D504', fn: mk(0x1D504, 0x1D51E, null, { ex: { C: 0x212D, H: 0x210C, I: 0x2111, R: 0x211C, Z: 0x2128 } }) },
+    { id: 'boldfraktur', g: 'latin', n: 'گوتیک بولد', need: 'en', meta: 'Math Bold Fraktur · U+1D56C', fn: mk(0x1D56C, 0x1D586, 0x1D7CE) },
+    { id: 'double', g: 'latin', n: 'توخالی', need: 'en', meta: 'Double-Struck · U+1D538', fn: mk(0x1D538, 0x1D552, 0x1D7D8, { ex: { C: 0x2102, H: 0x210D, N: 0x2115, P: 0x2119, Q: 0x211A, R: 0x211D, Z: 0x2124 } }) },
+    { id: 'sans', g: 'latin', n: 'سنس', need: 'en', meta: 'Math Sans · U+1D5A0', fn: mk(0x1D5A0, 0x1D5BA, 0x1D7E2) },
+    { id: 'sansbold', g: 'latin', n: 'سنس بولد', need: 'en', meta: 'Math Sans Bold · U+1D5D4', fn: mk(0x1D5D4, 0x1D5EE, 0x1D7EC) },
+    { id: 'sansitalic', g: 'latin', n: 'سنس ایتالیک', need: 'en', meta: 'Math Sans Italic · U+1D608', fn: mk(0x1D608, 0x1D622, 0x1D7E2) },
+    { id: 'mono', g: 'latin', n: 'ماشین‌تحریر', need: 'en', meta: 'Math Monospace · U+1D670', fn: mk(0x1D670, 0x1D68A, 0x1D7F6) },
+    { id: 'wide', g: 'latin', n: 'پهن', need: 'en', meta: 'Fullwidth · U+FF21', fn: mk(0xFF21, 0xFF41, 0xFF10) },
+    { id: 'smallcaps', g: 'latin', n: 'اسمال کپس', need: 'en', meta: 'Phonetic Ext · U+1D00', fn: tbl(ABC, 'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ') },
+    { id: 'super', g: 'latin', n: 'بالانویس', need: 'en', meta: 'Superscripts · U+1D2C', fn: tbl(ABC + '0123456789', 'ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖᵠʳˢᵗᵘᵛʷˣʸᶻ' + '⁰¹²³⁴⁵⁶⁷⁸⁹') },
+    { id: 'upside', g: 'latin', n: 'وارونه', need: 'en', meta: 'IPA + Turned · U+0250', fn: upside },
+    { id: 'circled', g: 'latin', n: 'دایره‌ای', need: 'en', meta: 'Enclosed Alnum · U+24B6', fn: mk(0x24B6, 0x24D0, null, { dig: function (k) { return k === 48 ? 0x24EA : 0x2460 + k - 49; } }) },
+    { id: 'negcircled', g: 'latin', n: 'دایره‌ی سیاه', need: 'en', meta: 'Enclosed Supp · U+1F150', fn: mk(0x1F150, null, null, { fold: true, dig: function (k) { return k === 48 ? 0x24FF : 0x2776 + k - 49; } }) },
+    { id: 'squared', g: 'latin', n: 'مربعی', need: 'en', meta: 'Enclosed Supp · U+1F130', fn: mk(0x1F130, null, null, { fold: true }) },
+    { id: 'negsquared', g: 'latin', n: 'مربع سیاه', need: 'en', meta: 'Enclosed Supp · U+1F170', fn: mk(0x1F170, null, null, { fold: true }) },
+    // frames
+    { id: 'f1', g: 'frames', n: 'سلطنتی', meta: 'U+A9C1 · U+0F12', fn: wrap('꧁༒ ', ' ༒꧂') },
+    { id: 'f2', g: 'frames', n: 'ستاره‌ی شرقی', meta: 'U+2605 · U+5F61', fn: wrap('★彡 ', ' 彡★') },
+    { id: 'f3', g: 'frames', n: 'شمشیر', meta: 'U+2694', fn: wrap('⚔ ', ' ⚔') },
+    { id: 'f4', g: 'frames', n: 'قاب گرد', meta: 'U+3010', fn: wrap('【', '】') },
+    { id: 'f5', g: 'frames', n: 'قاب ژاپنی', meta: 'U+300E', fn: wrap('『', '』') },
+    { id: 'f6', g: 'frames', n: 'تاج', meta: 'U+265B', fn: wrap('♛ ', ' ♛') },
+    { id: 'f7', g: 'frames', n: 'اسنایپر', meta: 'U+2584 · U+FE3B', fn: wrap('▄︻デ ', ' ══━一') },
+    { id: 'f8', g: 'frames', n: 'خنجر', meta: 'U+262C', fn: wrap('☬ ', ' ☬') },
+    { id: 'f9', g: 'frames', n: 'درخشان', meta: 'U+2726', fn: wrap('✦ ', ' ✦') },
+    { id: 'f10', g: 'frames', n: 'ماه و ستاره', meta: 'U+263E · U+2606', fn: wrap('☾ ☆ ', ' ☆ ☽') },
+    { id: 'f11', g: 'frames', n: 'پیکان', meta: 'U+2570 · U+27A4', fn: wrap('╰┈➤ ', ' ┈╯') },
+    { id: 'f12', g: 'frames', n: 'جعبه‌ی خط', meta: 'U+2554', fn: wrap('╔═ ', ' ═╗') },
+    // lines
+    { id: 'l1', g: 'line', n: 'خط‌خورده', meta: 'Combining U+0336', fn: mark('̶') },
+    { id: 'l2', g: 'line', n: 'زیرخط', meta: 'Combining U+0332', fn: mark('̲') },
+    { id: 'l3', g: 'line', n: 'زیرخط دوتایی', meta: 'Combining U+0333', fn: mark('̳') },
+    { id: 'l4', g: 'line', n: 'اسلش', meta: 'Combining U+0338', fn: mark('̸') },
+    // persian
+    { id: 'p1', g: 'persian', n: 'کشیده', need: 'fa', meta: 'Tatweel · U+0640', fn: function (t, p) { return kashida(t, p + 1); } },
+    { id: 'p2', g: 'persian', n: 'کشیده سلطنتی', need: 'fa', meta: 'Tatweel + U+A9C1', fn: function (t, p) { return '꧁ ' + kashida(t, p + 1) + ' ꧂'; } },
+    { id: 'p3', g: 'persian', n: 'حروف جدا', meta: 'Space · U+0020', fn: function (t, p) { return Array.from(t).join(' '.repeat(p)); } },
+    { id: 'p4', g: 'persian', n: 'نقطه‌دار', meta: 'Middle Dot · U+00B7', fn: function (t) { return Array.from(t).join('·'); } },
+    { id: 'p5', g: 'persian', n: 'ستاره‌دار', meta: 'Black Star · U+2605', fn: function (t) { return '★ ' + Array.from(t).join(' ✦ ') + ' ★'; } }
+  ];
+  function fr(id, n, pre, post, meta, g) {
+    return { id: id, g: g || 'frames', n: n, meta: meta, fn: wrap(pre, post) };
+  }
+  function frk(id, n, pre, post, meta) {
+    return { id: id, g: 'persian', n: n, need: 'fa', meta: meta, fn: function (t, p) { return pre + kashida(t, p + 1) + post; } };
+  }
+  S.push(
+    fr('f13', 'گل و ستاره', '⋆˚✿ ', ' ✿˚⋆', 'U+22C6 · U+273F'),
+    fr('f14', 'قلب', '♡ ', ' ♡', 'U+2661'),
+    fr('f15', 'جمجمه', '☠ ', ' ☠', 'U+2620'),
+    fr('f16', 'نیمه‌شب', '☽ ', ' ☾', 'U+263D · U+263E'),
+    fr('f17', 'الماس', '❖ ', ' ❖', 'U+2756'),
+    fr('f18', 'سوسن سلطنتی', '⚜ ', ' ⚜', 'U+269C'),
+    fr('f19', 'یین و یانگ', '☯ ', ' ☯', 'U+262F'),
+    fr('f20', 'مهر هلالی', '༺ ', ' ༻', 'U+0F3A'),
+    fr('f21', 'گل‌دار', '⊱✿⊰ ', ' ⊱✿⊰', 'U+22B1 · U+273F'),
+    fr('f22', 'بارکد', '▌│█║ ', ' ║█│▌', 'U+258C · U+2551'),
+    fr('f23', 'نقل‌قول', '❝ ', ' ❞', 'U+275D · U+275E'),
+    fr('f24', 'گیومه', '« ', ' »', 'U+00AB · U+00BB'),
+    fr('f25', 'کروشه‌ی ریاضی', '⟦ ', ' ⟧', 'U+27E6 · U+27E7'),
+    fr('f26', 'ذره‌های نور', '•°•✧ ', ' ✧•°•', 'U+2022 · U+2727'),
+    fr('f27', 'شعله', '🔥 ', ' 🔥', 'U+1F525'),
+    fr('f28', 'تاج شاه', '👑 ', ' 👑', 'U+1F451'),
+    fr('f29', 'رعد', '⚡ ', ' ⚡', 'U+26A1'),
+    fr('f30', 'گل‌سرخ', '❀ ', ' ❀', 'U+2740'),
+    fr('f31', 'قاب نقطه‌دار', '⁅ ', ' ⁆', 'U+2045 · U+2046'),
+    fr('f32', 'ستاره‌ی دایره‌ای', '✪ ', ' ✪', 'U+272A'),
+    fr('f33', 'تیغ دوم', '╾━╤デ╦︻ ', ' ━╾', 'U+2540 · U+2566'),
+    fr('f34', 'بال', 'ʚ ', ' ɞ', 'U+029A · U+025E'),
+    { id: 'l5', g: 'line', n: 'بالاخط', meta: 'Combining U+0305', fn: mark('̅') },
+    { id: 'l6', g: 'line', n: 'نقطه‌ی زیر', meta: 'Combining U+0323', fn: mark('̣') },
+    { id: 'l7', g: 'line', n: 'موج زیر', meta: 'Combining U+0330', fn: mark('̰') },
+    frk('pk3', 'کشیده + تاج', '♛ ', ' ♛', 'Tatweel + U+265B'),
+    frk('pk4', 'کشیده + ستاره', '★彡 ', ' 彡★', 'Tatweel + U+2605'),
+    frk('pk5', 'کشیده + شمشیر', '⚔ ', ' ⚔', 'Tatweel + U+2694'),
+    frk('pk6', 'کشیده + قلب', '♡ ', ' ♡', 'Tatweel + U+2661'),
+    frk('pk7', 'کشیده + شعله', '🔥 ', ' 🔥', 'Tatweel + U+1F525')
+  );
+  var GORDER = ['latin', 'frames', 'line', 'persian'];
+  S.sort(function (a, b) { return GORDER.indexOf(a.g) - GORDER.indexOf(b.g); });
+  $('#count').textContent = fa(S.length) + ' سبک آماده · یونیکد';
+
+  /* ---------- state ---------- */
+  var group = 'all';
+  try {
+    var saved = localStorage.getItem('fm-text');
+    if (saved !== null) input.value = saved; else input.value = 'Night Wolf';
+  } catch (e) { input.value = 'Night Wolf'; }
+
+  var toastTimer = 0, demoTimer = 0, demoList = [], demoIdx = 0;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1500);
+  }
+  function flash(btn) {
+    btn.classList.add('done');
+    var tag = btn.querySelector('.tag');
+    var prev = tag ? tag.textContent : '';
+    if (tag) tag.textContent = 'کپی شد ✓';
+    setTimeout(function () {
+      btn.classList.remove('done');
+      if (tag) tag.textContent = prev;
+    }, 1300);
+  }
+  function selectOut(btn) {
+    var out = btn.querySelector('.out');
+    var sel = window.getSelection(); var r = document.createRange();
+    r.selectNodeContents(out); sel.removeAllRanges(); sel.addRange(r);
+    return out;
+  }
+  function copy(text, btn) {
+    var done = function () { flash(btn); toast('کپی شد'); };
+    var fallback = function () {
+      selectOut(btn);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      if (ok) done(); else toast('متن انتخاب شد. با نگه داشتن انگشت کپی کن');
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+  }
+
+  function compute() {
+    var t = input.value.trim();
+    var p = +power.value;
+    var list = S.map(function (s) {
+      var out = t ? s.fn(t, p) : '';
+      var inert = !!t && s.need && out === t;
+      return { s: s, out: out, inert: inert };
+    });
+    return { t: t, list: list };
+  }
+
+  /* ---------- real fonts (Google Fonts) ---------- */
+  var FONTS = [
+    { n: 'Vazirmatn', d: 'مدرن و خوانا', fa: 1 },
+    { n: 'Lalezar', d: 'ضخیم و گیمینگی', fa: 1 },
+    { n: 'Harmattan', d: 'ساده و نرم', fa: 1 },
+    { n: 'Noto Naskh Arabic', d: 'نسخ', fa: 1 },
+    { n: 'Noto Kufi Arabic', d: 'کوفی', fa: 1 },
+    { n: 'Cairo', d: 'هندسی', fa: 1 },
+    { n: 'Tajawal', d: 'مینیمال', fa: 1 },
+    { n: 'Almarai', d: 'تمیز و رسمی', fa: 1 },
+    { n: 'Changa', d: 'ضخیم شهری', fa: 1 },
+    { n: 'El Messiri', d: 'کلاسیک مدرن', fa: 1 },
+    { n: 'Reem Kufi', d: 'کوفی لوکس', fa: 1 },
+    { n: 'Rakkas', d: 'ضخیم تزیینی', fa: 1 },
+    { n: 'Lemonada', d: 'شاد و گرد', fa: 1 },
+    { n: 'Mada', d: 'رسمی', fa: 1 },
+    { n: 'Markazi Text', d: 'کتابی', fa: 1 },
+    { n: 'Amiri', d: 'نسخ کلاسیک', fa: 1 },
+    { n: 'Scheherazade New', d: 'نسخ سنتی', fa: 1 },
+    { n: 'Aref Ruqaa', d: 'رقعه', fa: 1 },
+    { n: 'Katibeh', d: 'خوشنویسی', fa: 1 },
+    { n: 'Jomhuria', d: 'تیتری باریک', fa: 1 },
+    { n: 'Lateef', d: 'نستعلیق‌گونه', fa: 1 },
+    { n: 'Mirza', d: 'دست‌نویس', fa: 1 },
+    { n: 'Baloo Bhaijaan 2', d: 'گرد و بازیگوش', fa: 1 },
+    { n: 'IBM Plex Sans Arabic', d: 'فنی', fa: 1 },
+    { n: 'Readex Pro', d: 'خوانا و مدرن', fa: 1 },
+    { n: 'Kufam', d: 'کوفی ضخیم', fa: 1 },
+    { n: 'Alexandria', d: 'مدرن و گرد', fa: 1 },
+    { n: 'Noto Nastaliq Urdu', d: 'نستعلیق', fa: 1 },
+    { n: 'Gulzar', d: 'نستعلیق تزیینی', fa: 1 },
+    { n: 'Playpen Sans Arabic', d: 'دست‌خط کودکانه', fa: 1 },
+    { n: 'Vibes', d: 'دکوری', fa: 1 },
+    { n: 'Blaka', d: 'شیک و تزیینی', fa: 1 },
+    { n: 'Orbitron', d: 'علمی‌تخیلی', fa: 0 },
+    { n: 'Bungee', d: 'تابلویی', fa: 0 },
+    { n: 'Press Start 2P', d: 'پیکسلی', fa: 0 },
+    { n: 'Monoton', d: 'نئون خطی', fa: 0 },
+    { n: 'Righteous', d: 'رترو', fa: 0 },
+    { n: 'Pacifico', d: 'دست‌نویس', fa: 0 },
+    { n: 'Creepster', d: 'ترسناک', fa: 0 },
+    { n: 'Audiowide', d: 'فضایی', fa: 0 },
+    { n: 'Permanent Marker', d: 'ماژیکی', fa: 0 },
+    { n: 'Faster One', d: 'سرعتی', fa: 0 },
+    { n: 'Rubik Glitch', d: 'گلیچ', fa: 0 },
+    { n: 'Black Ops One', d: 'نظامی', fa: 0 },
+    { n: 'Nosifer', d: 'خونین', fa: 0 },
+    { n: 'Bungee Shade', d: 'سه‌بعدی', fa: 0 }
+  ];
+  function addF(fa, list) {
+    list.forEach(function (x) { FONTS.push({ n: x[0], d: x[1], fa: fa }); });
+  }
+  addF(1, [
+    ['Marhey', 'بازیگوش و ضخیم'], ['Handjet', 'پیکسلی ماتریسی'], ['Reem Kufi Fun', 'کوفی بامزه'],
+    ['Reem Kufi Ink', 'کوفی جوهری'], ['Aref Ruqaa Ink', 'رقعه‌ی جوهری'], ['Blaka Hollow', 'توخالی تزیینی'],
+    ['Blaka Ink', 'تزیینی ضخیم'], ['Cairo Play', 'مدرن و شاد'], ['Rubik', 'گرد و مدرن'],
+    ['Noto Sans Arabic', 'خنثی و تمیز'], ['Zain', 'شیک و باریک'], ['Qahiri', 'قاهره‌ای'],
+    ['Ruwudu', 'خوش‌فرم'], ['Madimi One', 'گرد و پفی']
+  ]);
+  addF(0, [
+    ['Bungee Inline', 'تابلویی خط‌دار'], ['Bungee Outline', 'تابلویی توخالی'], ['Rubik Wet Paint', 'رنگ چکان'],
+    ['Rubik Spray Paint', 'اسپری'], ['Rubik Distressed', 'کهنه'], ['Rubik Burned', 'سوخته'],
+    ['Rubik Microbe', 'میکروبی'], ['Rubik Maze', 'هزارتو'], ['Rubik Scribble', 'خط‌خطی'],
+    ['Rubik Vinyl', 'صفحه‌ی گرام'], ['Rubik Storm', 'طوفانی'], ['Rubik Beastly', 'وحشی'],
+    ['Rubik Glitch Pop', 'گلیچ پاپ'], ['Rubik Gemstones', 'جواهری'], ['Rubik Pixels', 'پیکسل'],
+    ['Rubik Lines', 'خطی'], ['Rubik Iso', 'ایزومتریک'], ['Tilt Neon', 'نئون واقعی'],
+    ['Tilt Warp', 'کج و سریع'], ['Tilt Prism', 'منشوری'], ['Sixtyfour', 'ترمینال'],
+    ['Honk', 'رنگی و شلوغ'], ['Nabla', 'سه‌بعدی رنگی'], ['Fascinate Inline', 'آرت‌دکو'],
+    ['Megrim', 'باریک علمی'], ['Zen Dots', 'نقطه‌ای فضایی'], ['Syncopate', 'پهن و تیتری'],
+    ['Michroma', 'مهندسی'], ['Russo One', 'ورزشی'], ['Teko', 'گیمینگی'],
+    ['Bangers', 'کمیک'], ['Shojumaru', 'ژاپنی'], ['Metal Mania', 'متال'],
+    ['Eater', 'خوفناک'], ['Butcherman', 'قصابی'], ['Pirata One', 'دزد دریایی'],
+    ['UnifrakturCook', 'گوتیک'], ['Cinzel Decorative', 'سلطنتی'], ['Special Elite', 'ماشین‌تحریر'],
+    ['Great Vibes', 'خوشنویسی'], ['Sacramento', 'امضایی'], ['Dancing Script', 'پیوسته'],
+    ['Lobster', 'کلاسیک پرطرفدار'], ['Shrikhand', 'ضخیم کج'], ['Fredericka the Great', 'تخته‌سیاه'],
+    ['Wallpoet', 'استنسیل دیواری'], ['Stalinist One', 'پوستری'], ['Vast Shadow', 'سایه‌دار'],
+    ['Londrina Outline', 'کارتونی توخالی'], ['New Rocker', 'راک'], ['Gloria Hallelujah', 'دست‌نویس شاد'],
+    ['Plaster', 'گچی'], ['Train One', 'ژاپنی ضخیم'], ['Iceland', 'یخی']
+  ]);
+  var flang = 'all';
+  var COLORS = ['#2f7bff', '#27e6ff', '#ff2e93', '#b6ff3b', '#ffb52e', '#a77bff', '#ffffff'];
+  var COLOR_NAMES = ['آبی', 'فیروزه‌ای', 'صورتی', 'سبز', 'نارنجی', 'بنفش', 'سفید'];
+  var mode = 'styles', fontsLoaded = false;
+
+  function loadFonts() {
+    if (fontsLoaded) return;
+    fontsLoaded = true;
+    FONTS.forEach(function (f) {
+      if (f.n === 'Vazirmatn' || f.n === 'Lalezar') return;
+      var l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(f.n).replace(/%20/g, '+') + '&display=swap';
+      document.head.appendChild(l);
+    });
+  }
+
+  var dlApi = { save: function (o) {
+    return new Promise(function (res) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(o.data); a.download = o.filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      res({ status: 'saved' });
+    });
+  } }, curColor = COLORS[0];
+  try {
+    if (window.claude && window.claude.use) {
+      window.claude.use('downloads').then(function (d) {
+        dlApi = d || null;
+        if (dlApi && mode === 'fonts') render();
+      }, function () {});
+    }
+  } catch (e) {}
+
+  function exportPng(f, t, btn) {
+    var label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'در حال ساخت…';
+    var reset = function () { btn.disabled = false; btn.textContent = label; };
+    var q = '"' + f.n + '"';
+    var load = document.fonts && document.fonts.load ? document.fonts.load('200px ' + q, t) : Promise.resolve();
+    Promise.resolve(load).catch(function () {}).then(function () {
+      var size = 220, pad = 60;
+      var c = document.createElement('canvas');
+      var ctx = c.getContext('2d');
+      var stack = function (s) { return s + 'px ' + q + ", 'Vazirmatn', sans-serif"; };
+      ctx.font = stack(size);
+      var w = ctx.measureText(t).width;
+      if (w + pad * 2 > 4000) { size = Math.floor(size * (4000 - pad * 2) / w); ctx.font = stack(size); w = ctx.measureText(t).width; }
+      var m = ctx.measureText(t);
+      var asc = m.fontBoundingBoxAscent || size * 0.95, desc = m.fontBoundingBoxDescent || size * 0.45;
+      c.width = Math.ceil(w + pad * 2);
+      c.height = Math.ceil(asc + desc + pad * 2);
+      ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.font = stack(size);
+      ctx.direction = hasFa(t) ? 'rtl' : 'ltr';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = curColor;
+      ctx.fillText(t, pad, pad + asc);
+      return new Promise(function (res, rej) {
+        c.toBlob(function (b) { b ? res(b) : rej(new Error('blob')); }, 'image/png');
+      });
+    }).then(function (blob) {
+      var name = f.n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-text.png';
+      return dlApi.save({ filename: name, data: blob });
+    }).then(function () {
+      toast('عکس شفاف ذخیره شد');
+    }).catch(function (err) {
+      if (err && err.code === 'declined') toast('دانلود لغو شد');
+      else toast('دانلود انجام نشد. دوباره امتحان کن');
+    }).then(reset);
+  }
+
+  function renderFonts() {
+    var t = input.value.trim();
+    grid.textContent = '';
+    if (!t) {
+      var e = document.createElement('div');
+      e.className = 'empty';
+      e.textContent = 'یه متن بنویس تا با فونت‌های مختلف نمایش داده بشه.';
+      grid.appendChild(e);
+      statusEl.textContent = '';
+      return;
+    }
+    var onlyFa = hasFa(t);
+    var list = FONTS.filter(function (f) {
+      if (onlyFa && !f.fa) return false;
+      if (flang === 'fa') return !!f.fa;
+      if (flang === 'en') return !f.fa;
+      return true;
+    });
+    list.forEach(function (f, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'card font';
+      b.style.setProperty('--i', Math.min(i, 14));
+      b.setAttribute('aria-label', 'کپی اسم فونت ' + f.n);
+      var top = document.createElement('span'); top.className = 'top';
+      var nm = document.createElement('span'); nm.textContent = f.d;
+      var tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = 'کپی اسم';
+      top.appendChild(nm); top.appendChild(tag);
+      var out = document.createElement('span'); out.className = 'out';
+      out.setAttribute('dir', 'auto');
+      out.style.fontFamily = "'" + f.n + "', 'Vazirmatn', sans-serif";
+      out.textContent = t;
+      var meta = document.createElement('span'); meta.className = 'meta'; meta.textContent = f.n;
+      b.appendChild(top); b.appendChild(out); b.appendChild(meta);
+      b.addEventListener('click', function () {
+        var done = function () { flash(b); toast('اسم فونت کپی شد'); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(f.n).then(done, function () {
+            var m = b.querySelector('.meta'); var sel = window.getSelection(); var r = document.createRange();
+            r.selectNodeContents(m); sel.removeAllRanges(); sel.addRange(r);
+            toast('اسم فونت انتخاب شد: ' + f.n);
+          });
+        } else { toast('اسم فونت: ' + f.n); }
+      });
+      var cw = document.createElement('div'); cw.className = 'cw';
+      cw.appendChild(b);
+      if (dlApi) {
+        var d = document.createElement('button');
+        d.type = 'button'; d.className = 'dl';
+        d.textContent = 'دانلود عکس شفاف (PNG)';
+        d.setAttribute('aria-label', 'دانلود عکس متن با فونت ' + f.n);
+        d.addEventListener('click', function () { exportPng(f, t, d); });
+        cw.appendChild(d);
+      }
+      grid.appendChild(cw);
+    });
+    statusEl.textContent = fa(list.length) + ' فونت برای «' + t + '»' + (onlyFa ? ' (فقط فونت‌های فارسی‌پشتیبان)' : '');
+  }
+
+  var swWrap = $('#swatches');
+  COLORS.forEach(function (c, i) {
+    var s = document.createElement('button');
+    s.type = 'button';
+    s.className = 'sw';
+    s.style.setProperty('--c', c);
+    s.setAttribute('aria-label', 'رنگ ' + COLOR_NAMES[i]);
+    s.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    s.addEventListener('click', function () {
+      grid.style.setProperty('--fc', c);
+      curColor = c;
+      swWrap.querySelectorAll('.sw').forEach(function (o) { o.setAttribute('aria-pressed', o === s ? 'true' : 'false'); });
+    });
+    swWrap.appendChild(s);
+  });
+  grid.style.setProperty('--fc', COLORS[0]);
+
+  document.querySelectorAll('#flangs .chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      flang = c.getAttribute('data-fl');
+      document.querySelectorAll('#flangs .chip').forEach(function (o) { o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      render();
+    });
+  });
+
+  document.querySelectorAll('.mode').forEach(function (m) {
+    m.addEventListener('click', function () {
+      mode = m.getAttribute('data-m');
+      document.querySelectorAll('.mode').forEach(function (o) { o.setAttribute('aria-pressed', o === m ? 'true' : 'false'); });
+      $('#stylebar').hidden = mode === 'fonts';
+      $('#fontbar').hidden = mode !== 'fonts';
+      $('#foot-fonts').hidden = mode !== 'fonts';
+      $('#foot-style').hidden = mode === 'fonts';
+      if (mode === 'fonts') loadFonts();
+      render();
+    });
+  });
+
+  function render() {
+    if (mode === 'fonts') { renderFonts(); return; }
+    var r = compute();
+    var t = r.t;
+    var shown = r.list.filter(function (x) { return group === 'all' || x.s.g === group; });
+    shown = shown.filter(function (x) { return !x.inert; }).concat(shown.filter(function (x) { return x.inert; }));
+    grid.textContent = '';
+    if (!t) {
+      var e = document.createElement('div');
+      e.className = 'empty';
+      e.textContent = 'یه متن بنویس تا سبک‌ها اینجا ساخته بشن.';
+      grid.appendChild(e);
+      statusEl.textContent = '';
+      demoList = []; demo.textContent = '';
+      return;
+    }
+    var live = 0;
+    shown.forEach(function (x, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'card' + (x.inert ? ' inert' : '');
+      b.style.setProperty('--i', Math.min(i, 14));
+      var top = document.createElement('span'); top.className = 'top';
+      var nm = document.createElement('span'); nm.textContent = x.s.n;
+      var tag = document.createElement('span'); tag.className = 'tag'; tag.textContent = x.inert ? '' : 'کپی';
+      top.appendChild(nm); top.appendChild(tag);
+      var out = document.createElement('span'); out.className = 'out'; out.setAttribute('dir', 'auto');
+      var meta = document.createElement('span'); meta.className = 'meta'; meta.textContent = x.s.meta;
+      if (x.inert) {
+        out.textContent = x.s.need === 'fa' ? 'برای این سبک متن فارسی بنویس' : 'این سبک فقط حروف انگلیسی و عدد رو تغییر میده';
+        out.removeAttribute('dir');
+        b.setAttribute('aria-disabled', 'true');
+      } else {
+        out.textContent = x.out; live++;
+        b.setAttribute('aria-label', 'کپی سبک ' + x.s.n);
+        b.addEventListener('click', function () { copy(x.out, b); });
+      }
+      b.appendChild(top); b.appendChild(out); b.appendChild(meta);
+      grid.appendChild(b);
+    });
+    statusEl.textContent = fa(live) + ' سبک برای «' + t + '» آماده‌ست';
+    demoList = r.list.filter(function (x) { return !x.inert && x.s.g !== 'persian' || (!x.inert && hasFa(t)); }).map(function (x) { return x.out; });
+    demoIdx = 0;
+    demo.textContent = demoList.length ? demoList[0] : '';
+  }
+
+  function cycle() {
+    clearInterval(demoTimer);
+    if (reduce) return;
+    demoTimer = setInterval(function () {
+      if (!demoList.length || document.hidden) return;
+      demo.classList.add('swap');
+      setTimeout(function () {
+        demoIdx = (demoIdx + 1) % demoList.length;
+        demo.textContent = demoList[demoIdx];
+        demo.classList.remove('swap');
+      }, 180);
+    }, 2200);
+  }
+
+  input.addEventListener('input', function () {
+    try { localStorage.setItem('fm-text', input.value); } catch (e) {}
+    render();
+  });
+  power.addEventListener('input', function () { powerOut.textContent = fa(power.value); render(); });
+  document.querySelectorAll('.samples button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      input.value = b.getAttribute('data-s');
+      try { localStorage.setItem('fm-text', input.value); } catch (e) {}
+      render(); input.focus();
+    });
+  });
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      group = c.getAttribute('data-g');
+      document.querySelectorAll('.chip').forEach(function (o) { o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      render();
+    });
+  });
+
+  render();
+  cycle();
+})();
+</script>
+
+</body>
+</html>
